@@ -1,10 +1,7 @@
 from __future__ import division, print_function, absolute_import
 
-#import matplotlib
-#matplotlib.use("TkAgg")
 import tensorflow as tf
 import numpy as np
-#import matplotlib.pyplot as plt
 
 # Load training data
 f = open('../data/trainData.csv')
@@ -93,3 +90,6 @@ with tf.Session() as sess:
         if probabilites[i][0] > 0.5 and test_labels[i] > 0.5 or probabilites[i][0] <= 0.5 and test_labels[i] <= 0.5:
             correct_count += 1
     print("Accuracy:", float(correct_count) / float(len(test_labels)))
+
+#if __name__ == '__main__':
+#    main()
