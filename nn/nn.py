@@ -1,25 +1,34 @@
 from __future__ import division, print_function, absolute_import
 
-import matplotlib
-matplotlib.use("TkAgg")
+#import matplotlib
+#matplotlib.use("TkAgg")
 import tensorflow as tf
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 # Load training data
 f = open('../data/trainData.csv')
-print(type(f))
+train_data = np.loadtxt(f.readlines(), delimiter=',')
 f.close()
-exit()
 
 f = open('../data/trainLabels.csv')
-train_labels = f.read().split('\n')[:-1]
+train_labels = np.loadtxt(f.readlines()) - 5.0 # -5.0 to change to 0s and 1s
+train_labels = np.expand_dims(train_labels, axis=1)
+f.close()
+
+# Load testing data
+f = open('../data/testData.csv')
+test_data = np.loadtxt(f.readlines(), delimiter=',')
+f.close()
+
+f = open('../data/testLabels.csv')
+test_labels = np.loadtxt(f.readlines()) - 5.0 # -5.0 to change to 0s and 1s
 f.close()
 
 # Parameters
 learning_rate = 0.001
 training_epochs = 1000 # Num of iterations in back propagation
-batch_size = 1 # Don't divide into batches
+batch_size = len(train_data) # Don't divide into batches
 
 hidden_count = 5
 # Network Parameters
@@ -35,7 +44,7 @@ weights = {
 }
 biases = {
     'hidden_b': tf.Variable(tf.random_uniform(shape=[n_hidden], minval=-0.5, maxval=0.5)),
-    'output_b': tf.Variable(tf.random_uniform(shape=[n_hidden, n_output], minval=-0.5, maxval=0.5)),
+    'output_b': tf.Variable(tf.random_uniform(shape=[n_output], minval=-0.5, maxval=0.5)),
 }
 
 # Build layer
@@ -66,8 +75,21 @@ init = tf.initialize_all_variables()
 # Launch the graph
 with tf.Session() as sess:
     sess.run(init)
+    total_batch = int(len(train_data)/batch_size)
     for epoch in range(training_epochs):
-        _, c = sess.run([optimizer, cost], feed_dict={X: batch_xs, y_true: some_true_value})
+
+        for i in range(total_batch):
+            batch_xs = train_data
+            _, c = sess.run([optimizer, cost], feed_dict={X: train_data, y_true: train_labels})
         print("Epoch:", '%04d' % (epoch+1),
               "cost=", "{:.9f}".format(c))
 
+    probabilites = sess.run(
+        y_pred, feed_dict={X: test_data})
+
+    correct_count = 0
+    assert len(probabilites) == len(test_labels)
+    for i in range(len(probabilites)):
+        if probabilites[i][0] > 0.5 and test_labels[i] > 0.5 or probabilites[i][0] <= 0.5 and test_labels[i] <= 0.5:
+            correct_count += 1
+    print("Accuracy:", float(correct_count) / float(len(test_labels)))
