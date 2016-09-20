@@ -39,17 +39,6 @@ def main():
         if flag == False:
             break
 
-    '''
-    for i in range(len(train_data)):
-        t = train_data[i].split(',')
-        t.append(1)
-        f = dot_product(weights, t)
-        if f > 0:
-            assert train_labels[i] == '6'
-        if f <= 0:
-            assert train_labels[i] == '5'
-    '''
-
     f = open('../data/testData.csv')
     test_data = f.read().split('\n')[:-1]
     f.close()
@@ -67,8 +56,8 @@ def main():
         if (dot > 0 and test_labels[i] == '6') or (dot <= 0 and test_labels[i] == '5'):
             correct_count += 1
 
-    print "Test accuracy:"
-    print float(correct_count) / float(len(test_data))
+    print "Test accuracy:", float(correct_count) / float(len(test_data))
+    print weights
 
 if __name__ == "__main__":
     main()
