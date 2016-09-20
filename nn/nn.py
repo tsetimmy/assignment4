@@ -41,5 +41,9 @@ def output(x)
     return out
 
 # Construct model
-op = output(layer(X))
+y_pred = output(layer(X))
+# Targets
+y_true = tf.placeholder("float", [None, n_output])
+
+# Define loss and optimizer, minimize the squared error
 
