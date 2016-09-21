@@ -89,7 +89,10 @@ def main(hidden_count, train_or_test):
         correct_count = 0
         assert len(probabilites) == len(test_labels)
         for i in range(len(probabilites)):
-            if probabilites[i][0] > 0.5 and test_labels[i] > 0.5 or probabilites[i][0] <= 0.5 and test_labels[i] <= 0.5:
+            if (probabilites[i][0] > 0.5 and
+                test_labels[i] > 0.5 or
+                probabilites[i][0] <= 0.5 and
+                test_labels[i] <= 0.5):
                 correct_count += 1
         print("Accuracy:", float(correct_count) / float(len(test_labels)))
         return float(correct_count) / float(len(test_labels))
@@ -110,7 +113,6 @@ if __name__ == '__main__':
         acc = main(i, 'test')
         test_accuracies.append(acc)
 
-    
     xmin = 1.5
     assert len(train_accuracies) == len(test_accuracies)
     for i in range(len(train_accuracies)):
@@ -132,5 +134,5 @@ if __name__ == '__main__':
     plt.title('(b)')
 
     plt.tight_layout()
-    plt.show()
+    #plt.show()
     plt.savefig('accuracy_nodes.pdf')
